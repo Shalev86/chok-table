@@ -98,10 +98,22 @@
             height: 600px;
             border-radius: 8px;
             transition: transform 0.3s;
+            position: relative;
         }
 
         .tableau-placeholder:hover {
             transform: scale(1.02);
+        }
+
+        .tableau-placeholder .fallback {
+            display: none;
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .analytics-categories {
@@ -201,7 +213,9 @@
 
     <section class="tableau-section" id="analytics">
         <h3>Explore Our Tableau Dashboards 🎉</h3>
-        <div id="tableauViz" class="tableau-placeholder"></div>
+        <div id="tableauViz" class="tableau-placeholder">
+            <div class="fallback">Unable to load Tableau dashboard. Please check your connection or try again later. 😕</div>
+        </div>
     </section>
 
     <section class="analytics-categories">
@@ -223,7 +237,6 @@
         <p>© 2025 Data Analytics Hub. All rights reserved. Made with ❤️</p>
     </footer>
 
-    <script src="https://public.tableau.com/javascripts/api/viz_v1.js"></script>
     <script>
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -238,17 +251,45 @@
         // Tableau embed script
         window.onload = function() {
             const tableauDiv = document.getElementById('tableauViz');
-            const vizUrl = 'https://public.tableau.com/views/Book1_17448770826770/Dashboard1?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link';
-            const options = {
-                width: '100%',
-                height: '600px',
-                hideTabs: true,
-                hideToolbar: true,
-                onFirstInteractive: function() {
-                    console.log('Tableau visualization loaded!');
+            const fallback = tableauDiv.querySelector('.fallback');
+            
+            // Load Tableau JavaScript API dynamically
+            const script = document.createElement('script');
+            script.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+            script.async = true;
+            
+            script.onload = function() {
+                console.log('Tableau API script loaded successfully.');
+                // Clean Tableau Public URL with embed parameters
+                const vizUrl = 'https://public.tableau.com/views/Book1_17448770826770/Dashboard1?:language=en-US&:embed=true&:showVizHome=no&:display_count=n&:origin=viz_share_link';
+                const options = {
+                    width: '100%',
+                    height: '600px',
+                    hideTabs: true,
+                    hideToolbar: true,
+                    onFirstInteractive: function() {
+                        console.log('Tableau visualization loaded successfully!');
+                        fallback.style.display = 'none'; // Hide fallback when viz loads
+                    },
+                    onFirstVizSizeKnown: function() {
+                        console.log('Tableau visualization size determined.');
+                    }
+                };
+
+                try {
+                    const viz = new tableau.Viz(tableauDiv, vizUrl, options);
+                } catch (error) {
+                    console.error('Error loading Tableau visualization:', error);
+                    fallback.style.display = 'block'; // Show fallback on error
                 }
             };
-            const viz = new tableau.Viz(tableauDiv, vizUrl, options);
+
+            script.onerror = function() {
+                console.error('Failed to load Tableau API script.');
+                fallback.style.display = 'block'; // Show fallback if script fails
+            };
+
+            document.body.appendChild(script);
         };
 
         // Animation on scroll
