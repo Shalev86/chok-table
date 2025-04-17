@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Analytics Dashboard 📊</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        header {
+            text-align: center;
+            padding: 50px 0;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        h1 {
+            font-size: 3em;
+            margin: 0;
+        }
+        h2 {
+            font-size: 2em;
+        }
+        section {
+            padding: 20px;
+            margin: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        section:hover {
+            transform: scale(1.05);
+        }
+        .tableau {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        .emoji {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Welcome to Our Data Analytics Dashboard! 🎉</h1>
+    <h2>Explore Your Data Like Never Before! 📈</h2>
+</header>
+
+<main>
+    <section>
+        <h2>Overview of Analytics 📊</h2>
+        <p>Discover the latest trends and insights from our comprehensive data analysis. 🔍</p>
+    </section>
+
+    <section>
+        <h2>Key Performance Indicators (KPIs) 📌</h2>
+        <p>Stay updated with the most relevant KPIs to drive your business decisions. 🚀</p>
+    </section>
+
+    <section>
+        <h2>Embedded Tableau Visualization 📉</h2>
+        <iframe class="tableau" src="https://public.tableau.com/views/YourTableauDashboardLink" frameborder="0"></iframe>
+        <p>Engage with our interactive visualizations to gain deeper insights! 💡</p>
+    </section>
+
+    <section>
+        <h2>Data Insights & Recommendations 📝</h2>
+        <p>Get actionable insights based on the data trends we've analyzed. 💼</p>
+    </section>
+</main>
+
+<footer>
+    <p>© 2025 Data Analytics Dashboard. All rights reserved. 🌐</p>
+</footer>
+
+<script>
+    // Simple animation for headers
+    const headers = document.querySelectorAll('h2');
+    headers.forEach(header => {
+        header.style.opacity = 0;
+        header.style.transform = 'translateY(-20px)';
+        setTimeout(() => {
+            header.style.transition = 'opacity 0.5s, transform 0.5s';
+            header.style.opacity = 1;
+            header.style.transform = 'translateY(0)';
+        }, 500);
+    });
+</script>
+
+</body>
+</html>
