@@ -99,6 +99,7 @@
             border-radius: 8px;
             transition: transform 0.3s;
             position: relative;
+            background: #f0f0f0;
         }
 
         .tableau-placeholder:hover {
@@ -252,15 +253,15 @@
         window.onload = function() {
             const tableauDiv = document.getElementById('tableauViz');
             const fallback = tableauDiv.querySelector('.fallback');
-            
+
             // Load Tableau JavaScript API dynamically
             const script = document.createElement('script');
             script.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
             script.async = true;
-            
+
             script.onload = function() {
                 console.log('Tableau API script loaded successfully.');
-                // Clean Tableau Public URL with embed parameters
+                // Correct Tableau Public URL with embed parameters
                 const vizUrl = 'https://public.tableau.com/views/Book1_17448770826770/Dashboard1?:language=en-US&:embed=true&:showVizHome=no&:display_count=n&:origin=viz_share_link';
                 const options = {
                     width: '100%',
@@ -278,6 +279,13 @@
 
                 try {
                     const viz = new tableau.Viz(tableauDiv, vizUrl, options);
+                    // Timeout to detect if viz fails to load
+                    setTimeout(() => {
+                        if (tableauDiv.innerHTML.includes('fallback')) {
+                            console.error('Tableau visualization failed to load within 10 seconds.');
+                            fallback.style.display = 'block';
+                        }
+                    }, 10000);
                 } catch (error) {
                     console.error('Error loading Tableau visualization:', error);
                     fallback.style.display = 'block'; // Show fallback on error
