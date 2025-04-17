@@ -106,6 +106,16 @@
             transform: scale(1.02);
         }
 
+        .tableau-placeholder .loading {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
         .tableau-placeholder .fallback {
             display: none;
             text-align: center;
@@ -116,6 +126,13 @@
             left: 50%;
             transform: translate(-50%, -50%);
             max-width: 80%;
+        }
+
+        .tableau-placeholder iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
         }
 
         .analytics-categories {
@@ -216,6 +233,7 @@
     <section class="tableau-section" id="analytics">
         <h3>Explore Our Tableau Dashboards 🎉</h3>
         <div id="tableauViz" class="tableau-placeholder">
+            <div class="loading">Loading Tableau Dashboard... ⏳</div>
             <div class="fallback">Unable to load Tableau dashboard. Please check your internet connection, ensure the dashboard is public, or try again later. 😕 <br> <a href="https://public.tableau.com/views/Book1_17448770826770/Dashboard1" target="_blank">View dashboard directly</a></div>
         </div>
     </section>
@@ -253,6 +271,7 @@
         // Tableau embed script
         window.onload = function() {
             const tableauDiv = document.getElementById('tableauViz');
+            const loading = tableauDiv.querySelector('.loading');
             const fallback = tableauDiv.querySelector('.fallback');
 
             // Load Tableau JavaScript API dynamically
@@ -271,7 +290,8 @@
                     hideToolbar: true,
                     onFirstInteractive: function() {
                         console.log('Tableau visualization loaded successfully!');
-                        fallback.style.display = 'none'; // Hide fallback when viz loads
+                        loading.style.display = 'none';
+                        fallback.style.display = 'none';
                     },
                     onFirstVizSizeKnown: function() {
                         console.log('Tableau visualization size determined.');
@@ -282,20 +302,32 @@
                     const viz = new tableau.Viz(tableauDiv, vizUrl, options);
                     // Timeout to detect if viz fails to load
                     setTimeout(() => {
-                        if (tableauDiv.innerHTML.includes('fallback') && fallback.style.display !== 'none') {
-                            console.error('Tableau visualization failed to load within 15 seconds.');
+                        if (loading.style.display !== 'none') {
+                            console.error('Tableau visualization failed to load within 20 seconds.');
+                            loading.style.display = 'none';
                             fallback.style.display = 'block';
+                            // Attempt iframe fallback
+                            console.log('Attempting iframe fallback...');
+                            tableauDiv.innerHTML = `<iframe src="${vizUrl}" width="100%" height="600px" frameborder="0"></iframe>`;
                         }
-                    }, 15000);
+                    }, 20000);
                 } catch (error) {
                     console.error('Error loading Tableau visualization:', error);
-                    fallback.style.display = 'block'; // Show fallback on error
+                    loading.style.display = 'none';
+                    fallback.style.display = 'block';
+                    // Attempt iframe fallback
+                    console.log('Attempting iframe fallback due to API error...');
+                    tableauDiv.innerHTML = `<iframe src="${vizUrl}" width="100%" height="600px" frameborder="0"></iframe>`;
                 }
             };
 
             script.onerror = function() {
                 console.error('Failed to load Tableau API script.');
-                fallback.style.display = 'block'; // Show fallback if script fails
+                loading.style.display = 'none';
+                fallback.style.display = 'block';
+                // Attempt iframe fallback
+                console.log('Attempting iframe fallback due to script load failure...');
+                tableauDiv.innerHTML = `<iframe src="https://public.tableau.com/views/Book1_17448770826770/Dashboard1?:language=en-US&:embed=true&:showVizHome=no" width="100%" height="600px" frameborder="0"></iframe>`;
             };
 
             document.body.appendChild(script);
